@@ -12,7 +12,8 @@ import socket
 from contextlib import closing
 from minion import run_minion
 
-master_db = 'sqlite:///master.db'
+db_name = 'master.db'
+master_db = 'sqlite:///' + db_name
 db_connect = create_engine(master_db)
 app = Flask(__name__)
 api = Api(app)
@@ -27,6 +28,7 @@ class NewSession(Resource):
         Creates new session.
         :return: json file with session_id
         """
+        check_if_db_exists()
         conn = db_connect.connect()  # connect to database
         new_session_id = self.__get_new_session(conn)
         try:
@@ -95,6 +97,7 @@ class Status(Resource):
                  'finished' - returned with list of passwords
                  'error' - if error handled
         """
+        check_if_db_exists()
         conn = db_connect.connect()
         try:
             sel = select([sessions.c.session_id]).where(sessions.c.session_id == session_id)
@@ -128,6 +131,7 @@ class UploadFile(Resource):
         if session_json['status'] == 'busy':
             return {'status': 'occupied', 'message': 'Session is occupied!'}
 
+        check_if_db_exists()
         update_status(session_id, 'busy')
         file = list(request.files.to_dict().values())[0]  # gets input file
 
@@ -428,6 +432,14 @@ def get_session_status(session_id):
     with open('sessions/' + session_id + '/' + session_filename, 'r') as f:
         session_json = json.load(f)
     return session_json['status']
+
+
+def check_if_db_exists():
+    """
+    Create new session db if not exists.
+    """
+    if not os.path.exists(db_name):
+        metadata.create_all(db_connect)
 
 
 json_filename = 'master.json'
