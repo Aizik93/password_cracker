@@ -272,6 +272,7 @@ def decipher_hashes(minions, hashes, session_id):
                 stop_master(minions)
                 return
     update_status(session_id, 'finished', passwords)
+    print("Hash file cracking was successfully finished!")
     stop_master(minions)
 
 
