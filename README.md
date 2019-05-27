@@ -3,13 +3,13 @@
 ## Files
 ### Master:
 •	master.py – master script<br>
-•	master.db – sql db with a table for opened sessions<br>
+•	master.db – sql db with a table for opened sessions - created initially <br>
 •	master.json – json file includes master’s status, port and number of minions<br>
 
 ### Minion:<br>
 •	minion.py – minion script <br>
-•	minion.db – sql db with a table for minion calculated hashes: [hash, password] <br>
-•	minion.json – json file includes minion status and port <br>
+•	<minion_id>.db – sql db with a table for minion calculated hashes: [hash, password] - created on demand<br>
+•	<minion_id>.json – json file includes minion status and port - created on demand <br>
 
 ### Session:
 Before uploading a hash file, you must first open a new session. <br>
@@ -30,9 +30,10 @@ Run the python script:<br>
 *python master.py*
 2.	Open a new session with Master server by send the following GET request:<br>
 *http://localhost:<master_port>/new_session*<br>
-The session id will returned in a json format.
+Master port is specified in the master.json file. The session id will returned in a json format.
 3.	Upload your hashes text file to the following POST request:<br>
-*http://localhost:<master_port>/sessions/<session_id>/upload*
+*http://localhost:<master_port>/sessions/<session_id>/upload*<br>
+There are example input and expected output files supplied.
 4.	Use the following command to get your result: <br>
 *http://localhost:<master_port>/sessions/<session_id>/status*<br>
 The output is a json with the following possible status:
