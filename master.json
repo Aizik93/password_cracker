@@ -1,0 +1,5 @@
+{
+"status": "ready",
+"port": 5002,
+"minions": 3
+}
